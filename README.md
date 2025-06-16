@@ -1,4 +1,4 @@
-# Blue-Clipper
+# [Blue-Clipper](https://github.com/smoorke/Blue-Clipper/releases/latest/download/BlueClipper.exe)
 Clip Mouse to Blue Prince Window
 
 Hold Alt to override clipping incase you wish to move the window when BLue Prince is in Windowed Mode.
