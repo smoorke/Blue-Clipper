@@ -53,6 +53,30 @@ Namespace My
                 Return defaultInstance
             End Get
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property AutoLaunch() As Boolean
+            Get
+                Return CType(Me("AutoLaunch"),Boolean)
+            End Get
+            Set
+                Me("AutoLaunch") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property CloseOnExit() As Boolean
+            Get
+                Return CType(Me("CloseOnExit"),Boolean)
+            End Get
+            Set
+                Me("CloseOnExit") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

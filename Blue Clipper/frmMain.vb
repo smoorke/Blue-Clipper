@@ -20,28 +20,36 @@ Public Class frmMain
         SetThemedMenu()
 
         Me.Opacity = 0
-        If BlueProc IsNot Nothing Then mh = New InputHook(InputHookType.Mouse_LL, AddressOf MouseHookCallBack)
+        If BlueProc IsNot Nothing Then
+            mh = New InputHook(InputHookType.Mouse_LL, AddressOf MouseHookCallBack)
+        Else
+            If My.Settings.AutoLaunch Then LaunchBluePrinceToolStripMenuItem.PerformClick()
+        End If
     End Sub
     Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
         Me.Hide()
     End Sub
 
-#End Region
-
     Private Sub SetThemedMenu()
         cmsTray.RenderMode = ToolStripRenderMode.Professional
         cmsTray.Renderer = New CustomRenderer()
-        For Each item As ToolStripMenuItem In cmsTray.Items.OfType(Of ToolStripMenuItem)
-            AddHandler item.Paint, Sub(sender As ToolStripMenuItem, e As PaintEventArgs)
-                                       If sender.Selected Then
-                                           sender.ForeColor = Color.Black
-                                       Else
-                                           sender.ForeColor = Color.White
-                                       End If
-                                   End Sub
+        SetPaintRecurse(cmsTray.Items, Sub(sender As ToolStripMenuItem, e As PaintEventArgs)
+                                           If sender.Selected Then
+                                               sender.ForeColor = Color.DarkSlateBlue
+                                           Else
+                                               sender.ForeColor = Color.LightBlue
+                                           End If
+                                       End Sub)
+    End Sub
+
+    Private Sub SetPaintRecurse(col As ToolStripItemCollection, act As PaintEventHandler)
+        For Each item As ToolStripMenuItem In col.OfType(Of ToolStripMenuItem)
+            AddHandler item.Paint, act
+            If item.HasDropDownItems Then SetPaintRecurse(item.DropDownItems, act)
         Next
     End Sub
 
+#End Region
 #Region "MouseHookCallBack"
 
 
@@ -91,6 +99,7 @@ Public Class frmMain
         ElseIf BlueProc Is Nothing AndAlso mh IsNot Nothing Then
             mh.UnHook()
             mh = Nothing
+            If My.Settings.CloseOnExit Then Me.Close()
         End If
     End Sub
 
@@ -128,5 +137,23 @@ Public Class frmMain
             LaunchBluePrinceToolStripMenuItem.PerformClick()
         End If
     End Sub
+
+    Private Sub AutoLaunchToolStripMenuItem_Click(sender As ToolStripMenuItem, e As ToolStripItemClickedEventArgs) Handles SettingsToolStripMenuItem.DropDownItemClicked
+        Dim item As ToolStripMenuItem = e.ClickedItem
+        item.Checked = Not item.Checked
+        Select Case item.Name
+            Case AutoLaunchToolStripMenuItem.Name
+                My.Settings.AutoLaunch = item.Checked
+            Case CloseOnExitToolStripMenuItem.Name
+                My.Settings.CloseOnExit = item.Checked
+        End Select
+        My.Settings.Save()
+    End Sub
+
+    Private Sub SettingsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles SettingsToolStripMenuItem.DropDownOpening
+        AutoLaunchToolStripMenuItem.Checked = My.Settings.AutoLaunch
+        CloseOnExitToolStripMenuItem.Checked = My.Settings.CloseOnExit
+    End Sub
+
 #End Region
 End Class

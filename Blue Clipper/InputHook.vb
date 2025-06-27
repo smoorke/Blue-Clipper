@@ -116,10 +116,7 @@ Public Class InputHook
             DispatchMessage(msg)
         End While
 
-        If _hookId <> IntPtr.Zero Then
-            UnhookWindowsHookEx(_hookId)
-            _hookId = IntPtr.Zero
-        End If
+        UnHook()
     End Sub
 
     Public Sub UnHook()
@@ -141,8 +138,7 @@ Public Class InputHook
         Public wParam As IntPtr
         Public lParam As IntPtr
         Public time As UInteger
-        Public pt_x As Integer
-        Public pt_y As Integer
+        Public pt As Point
     End Structure
 
     <DllImport("user32.dll")>
@@ -169,10 +165,7 @@ Public Class InputHook
             _stopRequested = True
 
             ' Explicitly unhook before signaling the thread to exit
-            If _hookId <> IntPtr.Zero Then
-                UnhookWindowsHookEx(_hookId)
-                _hookId = IntPtr.Zero
-            End If
+            UnHook()
 
             If _hookThread IsNot Nothing AndAlso _hookThread.IsAlive Then
 

@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BluePrince.ico" />
+    <None Include="Resources\gear_wheel.png" />
     <None Include="Resources\BluePrince.ico" />
     <None Include="Resources\close.png" />
   </ItemGroup>
